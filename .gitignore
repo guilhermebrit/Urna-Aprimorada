@@ -1,6 +1,7 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
+
 package com.urnadigital;
 
 import javax.swing.JOptionPane;
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author joaofranco
  */
+
 public class UrnaDigital {
 
     public static List<Object> cadastrarCandidatos() {
