@@ -1,24 +1,122 @@
-# Compiled class file
-*.class
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+package com.urnadigital;
 
-# Log file
-*.log
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
 
-# BlueJ files
-*.ctxt
+/**
+ *
+ * @author joaofranco
+ */
+public class UrnaDigital {
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+    public static List<Object> cadastrarCandidatos() {
+        boolean continuar = true;
+        List<Object> listaDosCandidatos = new ArrayList<>();
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+        do {
+            String candidato = JOptionPane.showInputDialog(null, "Informe o nome do candidato:", "Cadastro de candidato", JOptionPane.PLAIN_MESSAGE);
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+            if (candidato != null && !candidato.isBlank()) {
+                listaDosCandidatos.add(candidato);
+                continuar = JOptionPane.showConfirmDialog(null, "Deseja cadastrar novo candidato?") == JOptionPane.YES_OPTION ? true : false;
+            } else {
+                JOptionPane.showMessageDialog(null, "Impossível iniciar uma eleição sem candidatos!\nPor favor, cadastrar pelo menos um concorrente antes de liberar o início da votação.");
+            }
+
+       
+        } while (continuar);
+
+        listaDosCandidatos.add("");
+        listaDosCandidatos.add("NULO");
+
+        return listaDosCandidatos;
+    }
+
+    public static Object votar(List<Object> candidatos) {
+        return JOptionPane.showInputDialog(
+                null, // componente pai
+                "Informe o nome ou número do(a) candidato(a):", // pergunta
+                "Voto", // título da caixa de diálogo
+                JOptionPane.QUESTION_MESSAGE, // tipo de mensagem
+                null, // ícone alternativo
+                candidatos.toArray(), // vetor de opções predefinidas
+                candidatos.toArray()[0] // opção selecionada por padrão                    
+        );
+    }
+
+    public static double calcularPercentual(double total, double parte) {
+        return (parte * 100) / total;
+    }
+    
+    public static void exibirResultados(List<Object> candidatos, int[] numeroDeVotos) {
+        int totalVotos = 0;
+        int totalValidos = 0;
+
+        for (int i : numeroDeVotos) {
+            totalVotos += i;
+        }
+        
+        for (int i = 0; i < candidatos.size(); i++) {
+            if (!(candidatos.get(i).equals("BRANCO") || candidatos.get(i).equals("NULO"))) {
+               totalValidos += numeroDeVotos[i];
+            }
+        }
+
+        double percentualValidos = calcularPercentual(totalVotos, totalValidos);
+        double[] percentualVotosValidosPorCandidato = new double[candidatos.size()];
+        
+        for (int i = 0; i < candidatos.size(); i++) {
+            percentualVotosValidosPorCandidato[i] = calcularPercentual(totalValidos, numeroDeVotos[i]);
+            if (!(candidatos.get(i).equals("BRANCO") || candidatos.get(i).equals("NULO"))) {
+                System.out.println(candidatos.get(i) + " : " + numeroDeVotos[i] + " votos (" + percentualVotosValidosPorCandidato[i] + "%)");
+            }
+        }
+        
+        System.out.println("Total de votos: " + totalVotos);
+        System.out.println("Total de votos válidos: " + totalValidos);
+        System.out.println("Percentual de votos válidos: " + percentualValidos);
+
+    }
+
+    public static Object elegerVencedor(List<Object> candidatos, int[] numeroDeVotos) {
+        int maiorNumeroDeVotos = Integer.MIN_VALUE;
+        int posicao = -1;
+
+        for (int i = 0; i < candidatos.size(); i++) {
+            if (numeroDeVotos[i] > maiorNumeroDeVotos) {
+                maiorNumeroDeVotos = numeroDeVotos[i];
+                posicao = i;
+            }
+        }
+
+        return candidatos.get(posicao);
+    }
+
+    public static void main(String[] args) {
+        boolean continuar = true;
+        List<Object> nomesDosCandidatos = cadastrarCandidatos();
+
+        int[] numeroDeVotos = new int[nomesDosCandidatos.size()];
+
+        do {
+            Object voto = votar(nomesDosCandidatos);
+
+            for (int i = 0; i < nomesDosCandidatos.size(); i++) {
+                if (nomesDosCandidatos.get(i).equals(voto)) {
+                    numeroDeVotos[i]++;
+                }
+            }
+
+            int resposta = JOptionPane.showConfirmDialog(null, "Deseja registrar um novo voto?");
+            if (resposta != JOptionPane.YES_OPTION) {
+                continuar = false;
+            }
+        } while (continuar);
+
+        exibirResultados(nomesDosCandidatos, numeroDeVotos);
+    }
+}
