@@ -1,2 +1,5 @@
 # Urna-Aprimorada
-Sistema simples e acadêmico de uma urna de votação dinâmica.
+Sistema simples de uma urna de votação dinâmica.
+
+# Objetivo
+Aprender
